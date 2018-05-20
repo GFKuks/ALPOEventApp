@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.alpoeventapp.qualityapp">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".views.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".views.UserEventsListActivity" />
+        <activity android:name=".views.RegisterActivity" />
+        <activity android:name=".views.PasswordActivity" />
+        <activity android:name=".views.ProfileActivity" />
+        <activity android:name=".views.UpdateProfile" />
+        <activity android:name=".views.UpdatePassword" />
+        <activity android:name=".views.CreateEventActivity" />
+        <activity android:name=".views.BrowseEventsListActivity" />
+        <activity android:name=".views.EventDetailActivity" />
+        <activity android:name=".views.SavedEventsListActivity" />
+        <activity android:name=".views.UserEventsDetailActivity"></activity>
+    </application>
+
+</manifest>

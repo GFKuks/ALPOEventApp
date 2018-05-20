@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.CreateEventActivity">
+
+    <Button
+        android:id="@+id/btnCancelEventNew"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/btn_cancel"
+        app:layout_constraintStart_toStartOf="@+id/etMaxGuestCount"
+        app:layout_constraintTop_toBottomOf="@+id/etMaxGuestCount" />
+
+    <Button
+        android:id="@+id/btnConfirmEventNew"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_confirm"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btnCancelEventNew"
+        app:layout_constraintEnd_toEndOf="@+id/etMaxGuestCount" />
+
+    <TextView
+        android:id="@+id/tvEventDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/event_date_time"
+        app:layout_constraintBottom_toTopOf="@+id/etEventCreateDate"
+        app:layout_constraintStart_toStartOf="@+id/etEventCreateDate" />
+
+    <TextView
+        android:id="@+id/tvEventAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/event_address_header"
+        app:layout_constraintBottom_toTopOf="@+id/etEventCreateAddress"
+        app:layout_constraintStart_toStartOf="@+id/etEventCreateAddress" />
+
+    <TextView
+        android:id="@+id/tvEventDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/event_description_header"
+        app:layout_constraintBottom_toTopOf="@+id/etEventCreateDescription"
+        app:layout_constraintStart_toStartOf="@+id/etEventCreateDescription" />
+
+    <TextView
+        android:id="@+id/tvEventTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/event_title_header"
+        app:layout_constraintBottom_toTopOf="@+id/etEventCreateTitle"
+        app:layout_constraintStart_toStartOf="@+id/etEventCreateTitle" />
+
+    <EditText
+        android:id="@+id/etEventCreateTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:hint="@string/mandatory_field"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etEventCreateAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:hint="@string/mandatory_field"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/etEventCreateTitle"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/etEventCreateTitle"
+        app:layout_constraintTop_toBottomOf="@+id/etEventCreateTitle" />
+
+    <EditText
+        android:id="@+id/etEventCreateDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:hint="@string/mandatory_field"
+        android:inputType="date"
+        app:layout_constraintEnd_toEndOf="@+id/etEventCreateAddress"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/etEventCreateAddress"
+        app:layout_constraintTop_toBottomOf="@+id/etEventCreateAddress" />
+
+    <EditText
+        android:id="@+id/etEventCreateDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="47dp"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:hint="@string/optional_field"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="@+id/etEventCreateDate"
+        app:layout_constraintStart_toStartOf="@+id/etEventCreateDate"
+        app:layout_constraintTop_toBottomOf="@+id/etEventCreateDate" />
+
+    <EditText
+        android:id="@+id/etMaxGuestCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:hint="@string/max_guest_default"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/etEventCreateDescription"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/etEventCreateDescription"
+        app:layout_constraintTop_toBottomOf="@+id/etEventCreateDescription" />
+
+    <TextView
+        android:id="@+id/tvMaxGuestCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/max_guest_header"
+        app:layout_constraintBottom_toTopOf="@+id/etMaxGuestCount"
+        app:layout_constraintStart_toStartOf="@+id/etMaxGuestCount" />
+</android.support.constraint.ConstraintLayout>

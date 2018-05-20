@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "571943791585",
+    "firebase_url": "https://alpo-event-app.firebaseio.com",
+    "project_id": "alpo-event-app",
+    "storage_bucket": "alpo-event-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571943791585:android:af161d3df6eadcb8",
+        "android_client_info": {
+          "package_name": "com.alpoeventapp.qualityapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "571943791585-qo4kk17ruk4mcmvivmiscg854fkanan2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alpoeventapp.qualityapp",
+            "certificate_hash": "e6309ae0f62360ae59399a9ad8c495004348e209"
+          }
+        },
+        {
+          "client_id": "571943791585-60g6n764in10n1128j81ooinkam1oemf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF5fI_6pjZWkbP6sJRbdUEnaUssw_Croc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "571943791585-60g6n764in10n1128j81ooinkam1oemf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

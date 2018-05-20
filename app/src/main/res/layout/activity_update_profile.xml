@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.UpdateProfile">
+
+    <EditText
+        android:id="@+id/etProfileUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="72dp"
+        android:ems="10"
+        android:hint="@string/update_username_field"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
+        android:text="@string/save_changes"
+        app:layout_constraintEnd_toEndOf="@+id/etProfileEmail"
+        app:layout_constraintStart_toStartOf="@+id/etProfileEmail"
+        app:layout_constraintTop_toBottomOf="@+id/etProfileEmail" />
+
+    <EditText
+        android:id="@+id/etProfileEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:ems="10"
+        android:hint="@string/email_field"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="@+id/etProfileUsername"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/etProfileUsername"
+        app:layout_constraintTop_toBottomOf="@+id/etProfileUsername" />
+
+    <TextView
+        android:id="@+id/tvUserEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/email_header"
+        app:layout_constraintBottom_toTopOf="@+id/etProfileEmail"
+        app:layout_constraintStart_toStartOf="@+id/etProfileEmail" />
+
+    <TextView
+        android:id="@+id/tvUserHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/user_header"
+        app:layout_constraintBottom_toTopOf="@+id/etProfileUsername"
+        app:layout_constraintStart_toStartOf="@+id/etProfileUsername" />
+
+    <Button
+        android:id="@+id/btnDeleteProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/btn_delete_profile"
+        app:layout_constraintEnd_toEndOf="@+id/btnSave"
+        app:layout_constraintStart_toStartOf="@+id/btnSave"
+        app:layout_constraintTop_toBottomOf="@+id/btnSave" />
+</android.support.constraint.ConstraintLayout>

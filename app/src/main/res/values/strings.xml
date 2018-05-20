@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">ALPO</string>
+    <string name="username_field">Lietotājvārds</string>
+    <string name="password_field">Parole</string>
+    <string name="btn_auth">Autentificēties</string>
+    <string name="attempt_counter_text">Atlikušo mēģinājumu skaits:</string>
+    <string name="email_field">E-pasts</string>
+    <string name="register_text">Jauns lietotājs? Reģistrējaties šeit!</string>
+    <string name="register_button">Reģistrēties</string>
+    <string name="logout_text">Beigt darbu</string>
+    <string name="forgot_pass_text">Aizmirsāt paroli?</string>
+    <string name="reset_password_text">Atiestatīt paroli</string>
+    <string name="edit_rofile_btn">Rediģēt profilu</string>
+    <string name="update_password_button">Mainīt paroli</string>
+    <string name="update_username_field">Jauns lietotājvārds</string>
+    <string name="save_changes">Saglabāt izmaiņas</string>
+    <string name="change_password_field">Jaunā parole</string>
+    <string name="email_header">E-pasts:</string>
+    <string name="user_header">Lietotājvārds:</string>
+    <string name="btn_delete_profile">Dzēst profilu</string>
+    <string name="event_title_header">Nosaukums:</string>
+    <string name="event_address_header">Adrese:</string>
+    <string name="event_date_time">Datums un laiks:</string>
+    <string name="event_description_header">Apraksts:</string>
+    <string name="mandatory_field">(Obligāts)</string>
+    <string name="optional_field">(Neobligāts)</string>
+    <string name="btn_cancel">Atcelt</string>
+    <string name="btn_confirm">Saglabāt</string>
+    <string name="empty_event_1">Nevarēja atrast pasākumu,</string>
+    <string name="empty_event_2">Pasākumus var atrast un veidot izvēlnē.</string>
+    <string name="btn_edit">Rediģēt</string>
+    <string name="btn_delete">Dzēst</string>
+    <string name="max_guest_header">Maksimālais viesu skaits:</string>
+    <string name="max_guest_default">Pēc noklusējuma - 20</string>
+    <string name="guest_count_header">Viesu skaits:</string>
+    <string name="guest_count">Viesu skaits</string>
+</resources>
