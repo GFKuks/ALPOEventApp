@@ -19,6 +19,7 @@ public class UpdatePassword extends AppCompatActivity {
 
     private Button update;
     private EditText newPassword;
+    private EditText newPasswordConfirm;
     private FirebaseUser mFirebaseUser;
 
     @Override
@@ -28,6 +29,7 @@ public class UpdatePassword extends AppCompatActivity {
 
         update = findViewById(R.id.btnUpdatePassword);
         newPassword = findViewById(R.id.etNewPassword);
+        newPasswordConfirm = findViewById(R.id.etNewPasswordConfirm);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -39,17 +41,25 @@ public class UpdatePassword extends AppCompatActivity {
             public void onClick(View v) {
 
                 String updatedPassword = newPassword.getText().toString();
-                mFirebaseUser.updatePassword(updatedPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(UpdatePassword.this, "Parole veiksmīgi nomainīta", Toast.LENGTH_SHORT).show();
-                            finish();
-                        } else {
-                            Toast.makeText(UpdatePassword.this, "Kļūda paroles maiņā", Toast.LENGTH_SHORT).show();
+                String confirmPassword = newPasswordConfirm.getText().toString();
+
+                if (!updatedPassword.equals(confirmPassword)) {
+                    Toast.makeText(UpdatePassword.this, "Paroļu lauki nesakrīt!", Toast.LENGTH_SHORT).show();
+                } else if (updatedPassword.length() < 6) {
+                    Toast.makeText(UpdatePassword.this, "Parolei jāsastāv no vismaz 6 simboliem!", Toast.LENGTH_SHORT).show();
+                } else {
+                    mFirebaseUser.updatePassword(updatedPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(UpdatePassword.this, "Parole veiksmīgi nomainīta", Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else {
+                                Toast.makeText(UpdatePassword.this, "Kļūda paroles maiņā", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }

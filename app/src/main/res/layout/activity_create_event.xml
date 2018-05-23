@@ -90,7 +90,7 @@
         android:layout_marginTop="28dp"
         android:ems="10"
         android:hint="@string/mandatory_field"
-        android:inputType="date"
+        android:inputType="datetime"
         app:layout_constraintEnd_toEndOf="@+id/etEventCreateAddress"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/etEventCreateAddress"

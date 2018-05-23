@@ -1,6 +1,7 @@
 package com.alpoeventapp.qualityapp.views;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,15 +9,19 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.alpoeventapp.qualityapp.R;
-import com.alpoeventapp.qualityapp.controllers.BrowseEventViewHolder;
 import com.alpoeventapp.qualityapp.controllers.UserEventViewHolder;
 import com.alpoeventapp.qualityapp.models.Event;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class UserEventsListActivity extends AppCompatActivity {
     private static final String TAG = "UserEventsListActivity";
@@ -31,12 +36,27 @@ public class UserEventsListActivity extends AppCompatActivity {
         Log.d(TAG, "UserEvents: starts");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_events);
+        final View parentLayout = findViewById(android.R.id.content);
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mEventReference = FirebaseDatabase.getInstance().getReference().child("user-events").child(mFirebaseAuth.getUid());
-        setUpFirebaseAdapter();
+
+        mEventReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getChildrenCount() == 0) {
+                    Snackbar.make(parentLayout, "Jums nav pasākumu! Lai tos veidotu vai meklētu, atveriet izvēlni augšējā labajā stūrī!", Snackbar.LENGTH_INDEFINITE).show();
+                } else {
+                    setUpFirebaseAdapter();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
     }
 

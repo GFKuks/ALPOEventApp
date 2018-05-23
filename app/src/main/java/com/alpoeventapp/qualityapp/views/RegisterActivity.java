@@ -24,11 +24,12 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText userName;
     private EditText userEmail;
     private EditText userPassword;
+    private EditText passwordConfirm;
     private Button regButton;
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseReference;
 
-    String username, email, password;
+    String username, email, password, checkPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
         userName = findViewById(R.id.etUsername);
         userEmail = findViewById(R.id.etProfileEmail);
         userPassword = findViewById(R.id.etPassword);
+        passwordConfirm = findViewById(R.id.etPasswordConfirm);
         regButton = findViewById(R.id.btnRegister);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -80,13 +82,17 @@ public class RegisterActivity extends AppCompatActivity {
         username = userName.getText().toString();
         email = userEmail.getText().toString();
         password = userPassword.getText().toString();
+        checkPassword = passwordConfirm.getText().toString();
 
-        if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
+        if (!password.equals(checkPassword)) {
+            Toast.makeText(this, "Paroļu lauki nesakrīt!", Toast.LENGTH_SHORT).show();
+        } else if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
             Toast.makeText(this, "Lūdzu, aizpildiet visus laukus!", Toast.LENGTH_SHORT).show();
+        } else if (password.length() < 6) {
+            Toast.makeText(this, "Parolei jāsastāv no vismaz 6 simboliem!", Toast.LENGTH_SHORT).show();
         } else {
             result = true;
         }
-
         return result;
     }
 

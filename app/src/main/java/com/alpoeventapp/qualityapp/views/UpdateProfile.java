@@ -99,14 +99,13 @@ public class UpdateProfile extends AppCompatActivity {
     }
 
     private void deleteAccount() {
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         final FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
         currentUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-
                     startActivity(new Intent(UpdateProfile.this, MainActivity.class));
                     finish();
                 }

@@ -61,9 +61,7 @@ public class CreateEventActivity extends AppCompatActivity {
                     sendEventData(title, address, date, description, authorId, guestMaxCount);
                     Toast.makeText(CreateEventActivity.this, "Pasākums izveidots.", Toast.LENGTH_SHORT).show();
                     finish();
-                    startActivity(new Intent(CreateEventActivity.this, ProfileActivity.class));
-                } else {
-                    Toast.makeText(CreateEventActivity.this, "Kļūda pasākuma izveidē.", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(CreateEventActivity.this, UserEventsListActivity.class));
                 }
             }
         });
@@ -83,6 +81,7 @@ public class CreateEventActivity extends AppCompatActivity {
         address = eventAddress.getText().toString();
         date = eventDate.getText().toString();
         description = eventDescription.getText().toString();
+
         if (eventMaxGuestCount.getText().toString().matches("")) {
             guestMaxCount = 20;
         } else {
@@ -91,6 +90,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
         if (title.isEmpty() || address.isEmpty() || date.isEmpty()) {
             Toast.makeText(this, "Lūdzu, aizpildiet obligātos laukus!", Toast.LENGTH_SHORT).show();
+        } else if (title.length() > 25) {
+            Toast.makeText(this, "Nosaukums nedrīkst būt garāks par 25 rakstu zīmēm!", Toast.LENGTH_SHORT).show();
         } else {
             authorId = mFirebaseAuth.getUid();
             result = true;

@@ -34,4 +34,8 @@
     <string name="max_guest_default">Pēc noklusējuma - 20</string>
     <string name="guest_count_header">Viesu skaits:</string>
     <string name="guest_count">Viesu skaits</string>
+    <string name="btn_event_going">Pieteikties</string>
+    <string name="password_confirm">Apstipriniet paroli</string>
+    <string name="btn_save_changes">Saglabāt izmaiņas</string>
+    <string name="btn_event_cancel">Atteikties</string>
 </resources>

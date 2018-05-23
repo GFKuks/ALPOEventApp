@@ -3,17 +3,16 @@ package com.alpoeventapp.qualityapp.controllers;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alpoeventapp.qualityapp.R;
 import com.alpoeventapp.qualityapp.models.Event;
 import com.alpoeventapp.qualityapp.views.EventDetailActivity;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.alpoeventapp.qualityapp.views.UserEventsDetailActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class UserEventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
+    private static final String TAG = "UserEventViewHolder";
     private View mView;
     private Context mContext;
 
@@ -36,10 +35,10 @@ public class UserEventViewHolder extends RecyclerView.ViewHolder implements View
     }
 
     public void bindEvent(Event event) {
-        EditText title = mView.findViewById(R.id.etBrowseTitle);
-        EditText address = mView.findViewById(R.id.etBrowseAddress);
-        EditText date = mView.findViewById(R.id.etBrowseDate);
-        EditText guestCount = mView.findViewById(R.id.etBrowseGuestCount);
+        TextView title = mView.findViewById(R.id.tvBrowseTitle);
+        TextView address = mView.findViewById(R.id.tvBrowseAddress);
+        TextView date = mView.findViewById(R.id.tvBrowseDate);
+        TextView guestCount = mView.findViewById(R.id.tvBrowseGuestCount);
 
         title.setText(event.getTitle());
         address.setText(event.getAddress());
@@ -54,9 +53,9 @@ public class UserEventViewHolder extends RecyclerView.ViewHolder implements View
     public void onClick(View view) {
         final ArrayList<Event> events = new ArrayList<>();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-//        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
 
-        ref = ref.child("user-events");//.child(mFirebaseAuth.getUid());
+        ref = ref.child("user-events").child(mFirebaseAuth.getUid());
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
@@ -66,13 +65,12 @@ public class UserEventViewHolder extends RecyclerView.ViewHolder implements View
                 }
 
                 int itemPosition = getLayoutPosition();
+                String passedEventId = events.get(itemPosition).getEventId();
+                String passedAuthorId = events.get(itemPosition).getAuthorId();
 
-                Intent intent = new Intent(mContext, EventDetailActivity.class);
-
-                Bundle eventList = new Bundle();
-                eventList.putSerializable("eventList", events);
-                intent.putExtra("position", itemPosition + "");
-                intent.putExtra("bundle", eventList);
+                Intent intent = new Intent(mContext, UserEventsDetailActivity.class);
+                intent.putExtra("eventId", passedEventId);
+                intent.putExtra("authorId", passedAuthorId);
 
                 mContext.startActivity(intent);
             }

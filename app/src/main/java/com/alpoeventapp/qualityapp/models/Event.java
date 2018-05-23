@@ -5,15 +5,15 @@ import java.util.Map;
 
 public class Event {
 
-    private String eventId;
-    private String title;
-    private String address;
-    private String date;
-    private String description;
-    private String authorId;
-    private int guestCount = 0;
-    private int guestMaxCount;
-    private Map<String, Boolean> guests = new HashMap<>();
+    public String eventId;
+    public String title;
+    public String address;
+    public String date;
+    public String description;
+    public String authorId;
+    public int guestCount = 1;  //Pasākuma organizators vienmēŗ ieskaitīts kā viesis
+    public int guestMaxCount;
+    public Map<String, Boolean> guests = new HashMap<>();
 
 
     public Event() {
@@ -78,5 +78,17 @@ public class Event {
 
     public int getGuestMaxCount() {
         return guestMaxCount;
+    }
+
+    public void setGuestCount(int guestCount) {
+        this.guestCount = guestCount;
+    }
+
+    public void setGuestMaxCount(int guestMaxCount) {
+        this.guestMaxCount = guestMaxCount;
+    }
+
+    public void setGuests(Map<String, Boolean> guests) {
+        this.guests = guests;
     }
 }

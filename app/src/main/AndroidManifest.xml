@@ -22,6 +22,7 @@
         <activity android:name=".views.ProfileActivity" />
         <activity android:name=".views.UpdateProfile" />
         <activity android:name=".views.UpdatePassword" />
+        <activity android:name=".views.UpdateUserEventActivity" />
         <activity android:name=".views.CreateEventActivity" />
         <activity android:name=".views.BrowseEventsListActivity" />
         <activity android:name=".views.EventDetailActivity" />

@@ -4,6 +4,130 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.EventDetailActivity">
+    tools:context=".views.EventDetailActivity"
+    tools:layout_editor_absoluteY="81dp">
 
+    <TextView
+        android:id="@+id/tvBrowseDetailAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/event_address_header"
+        app:layout_constraintBottom_toTopOf="@+id/etBrowseDetailAddress"
+        app:layout_constraintStart_toStartOf="@+id/etBrowseDetailAddress" />
+
+    <TextView
+        android:id="@+id/tvBrowseDetailTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/event_title_header"
+        app:layout_constraintBottom_toTopOf="@+id/etBrowseDetailTitle"
+        app:layout_constraintStart_toStartOf="@+id/etBrowseDetailTitle" />
+
+    <EditText
+        android:id="@+id/etBrowseDetailTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:hint="@string/mandatory_field"
+        android:inputType="textPersonName"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etBrowseDetailAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="47dp"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:hint="@string/mandatory_field"
+        android:inputType="textPersonName"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        app:layout_constraintEnd_toEndOf="@+id/etBrowseDetailTitle"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/etBrowseDetailTitle"
+        app:layout_constraintTop_toBottomOf="@+id/etBrowseDetailTitle" />
+
+    <TextView
+        android:id="@+id/tvBrowseDetailDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/event_date_time"
+        app:layout_constraintBottom_toTopOf="@+id/etBrowseDetailDate"
+        app:layout_constraintStart_toStartOf="@+id/etBrowseDetailDate" />
+
+    <TextView
+        android:id="@+id/tvBrowseDetailDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        android:text="@string/event_description_header"
+        app:layout_constraintBottom_toTopOf="@+id/etBrowseDetailDescription"
+        app:layout_constraintStart_toStartOf="@+id/etBrowseDetailDescription" />
+
+    <EditText
+        android:id="@+id/etBrowseDetailDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:hint="@string/mandatory_field"
+        android:inputType="date"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        app:layout_constraintEnd_toEndOf="@+id/etBrowseDetailAddress"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/etBrowseDetailAddress"
+        app:layout_constraintTop_toBottomOf="@+id/etBrowseDetailAddress" />
+
+    <EditText
+        android:id="@+id/etBrowseDetailDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:hint="@string/optional_field"
+        android:inputType="textMultiLine"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        app:layout_constraintEnd_toEndOf="@+id/etBrowseDetailDate"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/etBrowseDetailDate"
+        app:layout_constraintTop_toBottomOf="@+id/etBrowseDetailDate" />
+
+    <Button
+        android:id="@+id/btnEventInteract"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/btn_event_cancel"
+        app:layout_constraintEnd_toEndOf="@+id/etBrowseDetailDescription"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="@+id/etBrowseDetailDescription"
+        app:layout_constraintTop_toBottomOf="@+id/tvBrowseDetailGuestCount" />
+
+    <TextView
+        android:id="@+id/tvBrowseDetailGuestCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/guest_count_header"
+        app:layout_constraintStart_toStartOf="@+id/etBrowseDetailDescription"
+        app:layout_constraintTop_toBottomOf="@+id/etBrowseDetailDescription" />
 </android.support.constraint.ConstraintLayout>

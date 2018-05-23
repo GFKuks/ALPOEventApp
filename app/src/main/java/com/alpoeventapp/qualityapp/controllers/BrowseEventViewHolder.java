@@ -2,16 +2,15 @@ package com.alpoeventapp.qualityapp.controllers;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alpoeventapp.qualityapp.R;
 import com.alpoeventapp.qualityapp.models.Event;
 import com.alpoeventapp.qualityapp.views.EventDetailActivity;
+import com.alpoeventapp.qualityapp.views.UserEventsDetailActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,8 +21,8 @@ import java.util.ArrayList;
 
 public class BrowseEventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    View mView;
-    Context mContext;
+    private View mView;
+    private Context mContext;
 
     public BrowseEventViewHolder(View itemView) {
         super(itemView);
@@ -33,10 +32,10 @@ public class BrowseEventViewHolder extends RecyclerView.ViewHolder implements Vi
     }
 
     public void bindEvent(Event event) {
-        EditText title = mView.findViewById(R.id.etBrowseTitle);
-        EditText address = mView.findViewById(R.id.etBrowseAddress);
-        EditText date = mView.findViewById(R.id.etBrowseDate);
-        EditText guestCount = mView.findViewById(R.id.etBrowseGuestCount);
+        TextView title = mView.findViewById(R.id.tvBrowseTitle);
+        TextView address = mView.findViewById(R.id.tvBrowseAddress);
+        TextView date = mView.findViewById(R.id.tvBrowseDate);
+        TextView guestCount = mView.findViewById(R.id.tvBrowseGuestCount);
 
         title.setText(event.getTitle());
         address.setText(event.getAddress());
@@ -44,7 +43,6 @@ public class BrowseEventViewHolder extends RecyclerView.ViewHolder implements Vi
 
         String guestCapacity = event.getGuestCount() + "/" + event.getGuestMaxCount();
         guestCount.setText(guestCapacity);
-
     }
 
     @Override
@@ -61,13 +59,12 @@ public class BrowseEventViewHolder extends RecyclerView.ViewHolder implements Vi
                 }
 
                 int itemPosition = getLayoutPosition();
+                String passedEventId = events.get(itemPosition).getEventId();
+                String passedAuthorId = events.get(itemPosition).getAuthorId();
 
                 Intent intent = new Intent(mContext, EventDetailActivity.class);
-
-                Bundle eventList = new Bundle();
-                eventList.putSerializable("eventList", events);
-                intent.putExtra("position", itemPosition + "");
-                intent.putExtra("bundle", eventList);
+                intent.putExtra("eventId", passedEventId);
+                intent.putExtra("authorId", passedAuthorId);
 
                 mContext.startActivity(intent);
             }
