@@ -60,10 +60,10 @@ public class UpdateUserEventActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         eventId = intent.getStringExtra("eventId");
-        authorId = intent.getStringExtra("authorId");
+        authorId = mFirebaseAuth.getUid();
 
 
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("user-events").child(authorId).child(eventId);
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("events").child(eventId);
 
         final ValueEventListener eventListener = new ValueEventListener() {
             @Override
@@ -138,7 +138,6 @@ public class UpdateUserEventActivity extends AppCompatActivity {
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/events/" + eventId, eventValues);
-        childUpdates.put("/user-events/" + authorId + "/" + eventId, eventValues);
 
         mDatabaseReference.updateChildren(childUpdates);
     }
@@ -146,8 +145,9 @@ public class UpdateUserEventActivity extends AppCompatActivity {
     private void deleteEvent() {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/events/" + eventId, null);
-        childUpdates.put("/user-events/" + authorId + "/" + eventId, null);
+//        childUpdates.put("/user-events/" + authorId + "/" + eventId, null);
         mDatabaseReference.updateChildren(childUpdates);
+        mDatabaseReference.child("user-events").child(authorId).child(eventId).removeValue();
 
         Toast.makeText(UpdateUserEventActivity.this, "Pasākums izdzēsts.", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(UpdateUserEventActivity.this, MainActivity.class));

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,7 +24,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class EventDetailActivity extends AppCompatActivity {
+    private static final String TAG = "EventDetailActivity";
 
     private EditText eventTitle;
     private EditText eventAddress;
@@ -34,7 +39,12 @@ public class EventDetailActivity extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseReference;
-    private DatabaseReference mAuthorDatabaseReference;
+//    private DatabaseReference mAuthorDatabaseReference;
+    private DatabaseReference mSavedEventDatabaseReference;
+
+    private String eventId;
+    private String authorId;
+    private boolean userAttendance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,18 +59,14 @@ public class EventDetailActivity extends AppCompatActivity {
         eventAttendToggle = findViewById(R.id.btnEventInteract);
 
         Intent intent = getIntent();
-        final String eventId = intent.getStringExtra("eventId");
-        final String authorId = intent.getStringExtra("authorId");
+        eventId = intent.getStringExtra("eventId");
         final View parentLayout = findViewById(android.R.id.content);
 
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("events").child(eventId);
-        mAuthorDatabaseReference = FirebaseDatabase.getInstance().getReference().child("user-events").child(authorId).child(eventId);
         mFirebaseAuth = mFirebaseAuth.getInstance();
 
-        if (authorId.equals(mFirebaseAuth.getUid())) {
-            eventAttendToggle.setEnabled(false);
-            Snackbar.make(parentLayout, "Nav iespējams atteikties no sava pasākuma! Ja vēlaties to dzēst, dodaties uz 'Mani pasākumi'!", Snackbar.LENGTH_INDEFINITE).show();
-        }
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("events").child(eventId);
+        mSavedEventDatabaseReference = FirebaseDatabase.getInstance().getReference().child("saved-events").child(mFirebaseAuth.getUid());
+
 
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -72,20 +78,27 @@ public class EventDetailActivity extends AppCompatActivity {
                     eventDate.setText(event.getDate());
                     eventDescription.setText(event.getDescription());
 
+                    authorId = event.getAuthorId();
+
                     String guestCount = "Viesu skaits: " + event.getGuestCount() + "/" + event.getGuestMaxCount();
                     eventGuestCount.setText(guestCount);
 
-                    if ((!event.guests.containsKey(mFirebaseAuth.getUid())) && (!authorId.equals(mFirebaseAuth.getUid()))) {
+                    if ((!isUserAttending(mSavedEventDatabaseReference)) && (!authorId.equals(mFirebaseAuth.getUid()))) {
                         eventAttendToggle.setText("Pieteikties");
                     } else {
                         eventAttendToggle.setText("Atteikties");
                     }
 
-                    if ((event.guestCount < event.guestMaxCount) && (!authorId.equals(mFirebaseAuth.getUid()))) {
-                        eventAttendToggle.setEnabled(true);
-                    } else {
+                    if (authorId.equals(mFirebaseAuth.getUid())) {
                         eventAttendToggle.setEnabled(false);
+                        Snackbar.make(parentLayout, "Nav iespējams atteikties no sava pasākuma! Ja vēlaties to dzēst, dodaties uz 'Mani pasākumi'!", Snackbar.LENGTH_INDEFINITE).show();
+
+                    } else if ((event.getGuestCount() < event.getGuestMaxCount()) && (!authorId.equals(mFirebaseAuth.getUid()))) {
+                        eventAttendToggle.setEnabled(true);
                     }
+//                    else {
+//                        eventAttendToggle.setEnabled(false);
+//                    }
                 }
             }
 
@@ -95,11 +108,12 @@ public class EventDetailActivity extends AppCompatActivity {
             }
         });
 
+
+
         eventAttendToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onEventInteraction(mDatabaseReference);
-                onEventInteraction(mAuthorDatabaseReference);
             }
         });
     }
@@ -113,14 +127,16 @@ public class EventDetailActivity extends AppCompatActivity {
                     return Transaction.success(mutableData);
                 }
 
-                if (event.guests.containsKey(mFirebaseAuth.getUid())) {
-                    event.guestCount -= 1;
-                    event.guests.remove(mFirebaseAuth.getUid());
-                } else {
-                    event.guestCount += 1;
-                    event.guests.put(mFirebaseAuth.getUid(), true);
-                }
+                if (isUserAttending(mSavedEventDatabaseReference)){
+                    event.setGuestCount(event.getGuestCount() - 1);
+                    mSavedEventDatabaseReference.child(eventId).removeValue();
 
+                } else {
+                    event.setGuestCount(event.getGuestCount() + 1);
+                    Map<String, Object> savedEvent = new HashMap<>();
+                    savedEvent.put(event.getEventId(), true);
+                    mSavedEventDatabaseReference.updateChildren(savedEvent);
+                }
                 // Set value and report transaction success
                 mutableData.setValue(event);
                 return Transaction.success(mutableData);
@@ -128,38 +144,28 @@ public class EventDetailActivity extends AppCompatActivity {
 
             @Override
             public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-
             }
         });
     }
 
-    private void eventAuthorTransaction (DatabaseReference eventRef) {
-        eventRef.runTransaction(new Transaction.Handler() {
+    private boolean isUserAttending(DatabaseReference guestRef) {
+        guestRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
-                Event event = mutableData.getValue(Event.class);
-                if (event == null) {
-                    return Transaction.success(mutableData);
-                }
-
-                if (event.guests.containsKey(mFirebaseAuth.getUid())) {
-                    event.guestCount -= 1;
-                    event.guests.remove(mFirebaseAuth.getUid());
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(eventId)) {
+                    userAttendance = true;
+                    Log.d(TAG, "onDataChange: " + userAttendance);
                 } else {
-                    event.guestCount += 1;
-                    event.guests.put(mFirebaseAuth.getUid(), true);
+                    userAttendance = false;
+                    Log.d(TAG, "onDataChange: " + userAttendance);
                 }
-
-                // Set value and report transaction success
-                mutableData.setValue(event);
-                return Transaction.success(mutableData);
             }
 
             @Override
-            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+        return userAttendance;
     }
-
 }

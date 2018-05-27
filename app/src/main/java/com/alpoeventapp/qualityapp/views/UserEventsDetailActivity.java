@@ -46,9 +46,9 @@ public class UserEventsDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         final String eventId = intent.getStringExtra("eventId");
-        final String authorId = intent.getStringExtra("authorId");
+//        final String authorId = intent.getStringExtra("authorId");
 
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("user-events").child(authorId).child(eventId);
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("events").child(eventId);
 
         final ValueEventListener eventListener = new ValueEventListener() {
             @Override
@@ -78,7 +78,7 @@ public class UserEventsDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(UserEventsDetailActivity.this, UpdateUserEventActivity.class);
                 intent.putExtra("eventId", eventId);
-                intent.putExtra("authorId", authorId);
+//                intent.putExtra("authorId", authorId);
 
                 startActivity(intent);
             }

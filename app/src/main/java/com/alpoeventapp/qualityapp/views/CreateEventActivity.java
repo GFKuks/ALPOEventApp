@@ -108,12 +108,15 @@ public class CreateEventActivity extends AppCompatActivity {
         String key = mDatabaseReference.child("events").push().getKey();
         Event newEvent = new Event(key, title, address, date, description, authorId, guestMaxCount);
         Map<String, Object> eventValues = newEvent.toMap();
+        Map<String, Object> ownerValues = new HashMap<>();
+        ownerValues.put(key, true);
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/events/" + key, eventValues);
-        childUpdates.put("/user-events/" + authorId + "/" + key, eventValues);
+//        childUpdates.put("/user-events/" + authorId + "/" + ownerValues, null);
 
         mDatabaseReference.updateChildren(childUpdates);
+        mDatabaseReference.child("user-events").child(mFirebaseAuth.getUid()).updateChildren(ownerValues);
 
     }
 }

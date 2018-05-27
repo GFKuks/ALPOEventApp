@@ -22,16 +22,17 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class UserEventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-    private static final String TAG = "UserEventViewHolder";
+public class EventViewHolder extends RecyclerView.ViewHolder
+//        implements View.OnClickListener
+{
+    private static final String TAG = "EventViewHolder";
     private View mView;
     private Context mContext;
 
-    public UserEventViewHolder(View itemView) {
+    public EventViewHolder(View itemView) {
         super(itemView);
         mView = itemView;
         mContext = itemView.getContext();
-        itemView.setOnClickListener(this);
     }
 
     public void bindEvent(Event event) {
@@ -47,37 +48,5 @@ public class UserEventViewHolder extends RecyclerView.ViewHolder implements View
         String guestCapacity = event.getGuestCount() + "/" + event.getGuestMaxCount();
         guestCount.setText(guestCapacity);
 
-    }
-
-    @Override
-    public void onClick(View view) {
-        final ArrayList<Event> events = new ArrayList<>();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
-
-        ref = ref.child("user-events").child(mFirebaseAuth.getUid());
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    events.add(snapshot.getValue(Event.class));
-                }
-
-                int itemPosition = getLayoutPosition();
-                String passedEventId = events.get(itemPosition).getEventId();
-                String passedAuthorId = events.get(itemPosition).getAuthorId();
-
-                Intent intent = new Intent(mContext, UserEventsDetailActivity.class);
-                intent.putExtra("eventId", passedEventId);
-                intent.putExtra("authorId", passedAuthorId);
-
-                mContext.startActivity(intent);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
     }
 }
