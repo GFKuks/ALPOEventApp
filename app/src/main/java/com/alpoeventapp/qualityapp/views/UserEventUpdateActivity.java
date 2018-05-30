@@ -20,14 +20,16 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UpdateUserEventActivity extends AppCompatActivity {
+/**
+ * Šī klase apraksta lietotāja pasākumu rediģēšanas aktivitātes darbību
+ */
+public class UserEventUpdateActivity extends AppCompatActivity {
 
     private EditText eventTitle;
     private EditText eventAddress;
     private EditText eventDate;
     private EditText eventDescription;
     private EditText eventMaxGuestCount;
-    private Button delete, confirm;
 
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseReference;
@@ -39,12 +41,16 @@ public class UpdateUserEventActivity extends AppCompatActivity {
     private String authorId;
     private String eventId;
     private int guestMaxCount;
-    private String guests;
 
+    /**
+     * onCreate funkcija darbojas aktivitātes sākšanas vai atsākšanas brīdī.
+     * @param savedInstanceState - izmantots, lai saglabātu iepriekš ievadītu informāciju.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_user_event);
+        setTitle(getString(R.string.app_name) + ": "+ getString(R.string.user_events_title));
 
         eventTitle = findViewById(R.id.etEditEventTitle);
         eventAddress = findViewById(R.id.etEditEventAddress);
@@ -52,8 +58,8 @@ public class UpdateUserEventActivity extends AppCompatActivity {
         eventDescription = findViewById(R.id.etEditEventDescription);
         eventMaxGuestCount = findViewById(R.id.etEditMaxGuestCount);
 
-        delete = findViewById(R.id.btnDeleteEvent);
-        confirm = findViewById(R.id.btnSaveEventChanges);
+        Button delete = findViewById(R.id.btnDeleteEvent);
+        Button confirm = findViewById(R.id.btnSaveEventChanges);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -65,6 +71,9 @@ public class UpdateUserEventActivity extends AppCompatActivity {
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("events").child(eventId);
 
+        /**
+         * Notikumu uztvērējs novēro pasākumu, un atjaunina par to uzrādīto informāciju.
+         */
         final ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -78,23 +87,27 @@ public class UpdateUserEventActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(UpdateUserEventActivity.this, String.valueOf(databaseError.getCode()), Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserEventUpdateActivity.this, String.valueOf(databaseError.getCode()), Toast.LENGTH_SHORT).show();
             }
         };
 
         databaseReference.addValueEventListener(eventListener);
 
+        /**
+         * Apstiprinājuma poga pārbauda, vai izpildās validācija. Ja jā, tad tiek saglabāts izmaiņas
+         * un lietotājs tiek aizvests uz pasākuma detalizēto skatu.
+         */
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validate()) {
                     updateEventData(eventId, title, address, date, description, authorId, guestMaxCount);
-                    Toast.makeText(UpdateUserEventActivity.this, "Izmaiņas saglabātas.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserEventUpdateActivity.this, "Izmaiņas saglabātas.", Toast.LENGTH_SHORT).show();
                     finish();
-                    startActivity(new Intent(UpdateUserEventActivity.this, MainActivity.class));
+                    startActivity(new Intent(UserEventUpdateActivity.this, MainActivity.class));
                 } else {
-                    Toast.makeText(UpdateUserEventActivity.this, "Kļūda pasākuma izmaiņu saglabāšanā.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserEventUpdateActivity.this, "Kļūda pasākuma izmaiņu saglabāšanā.", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -109,6 +122,9 @@ public class UpdateUserEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Funkcija pārbauda, vai pasākums atbilst noteikumiem
+     */
     private boolean validate() {
         boolean result = false;
 
@@ -116,6 +132,7 @@ public class UpdateUserEventActivity extends AppCompatActivity {
         address = eventAddress.getText().toString();
         date = eventDate.getText().toString();
         description = eventDescription.getText().toString();
+
         if (eventMaxGuestCount.getText().toString().matches("")) {
             guestMaxCount = 20;
         } else {
@@ -123,7 +140,13 @@ public class UpdateUserEventActivity extends AppCompatActivity {
         }
 
         if (title.isEmpty() || address.isEmpty() || date.isEmpty()) {
-            Toast.makeText(this, "Lūdzu, aizpildiet obligātos laukus!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.REG_ERR_2, Toast.LENGTH_SHORT).show();
+        } else if (title.length() > 25) {
+            Toast.makeText(this, "Nosaukums nedrīkst būt garāks par 25 rakstu zīmēm!", Toast.LENGTH_SHORT).show();
+        } else if (address.length() > 50) {
+            Toast.makeText(this, "Adrese nedrīkst būt garāka par 50 rakstu zīmēm!", Toast.LENGTH_SHORT).show();
+        } else if (description.length() > 250) {
+            Toast.makeText(this, "Apraksts nedrīkst būt garāks par 250 rakstu zīmēm!", Toast.LENGTH_SHORT).show();
         } else {
             authorId = mFirebaseAuth.getUid();
             result = true;
@@ -132,6 +155,16 @@ public class UpdateUserEventActivity extends AppCompatActivity {
         return result;
     }
 
+    /**
+     * Funkcija atjaunina pasākuma mezgla vērtības ar jaunajām norādītajām.
+     * @param eventId - parametrs tiek iegūts sākoties aktivitātes darbam, no iepriekšējās aktivitātes
+     * @param title - {..
+     * @param address - ..
+     * @param date - ..
+     * @param description - ..} parametri iegūti no mainīgajiem, kas aizpildīti validācijas laikā
+     * @param authorId - parametrs iegūts no esošā lietotāja autorizācijas informācijas
+     * @param guestMaxCount - parametrs iegūts no mainīgā, kas aizpildīts validācijas laikā
+     */
     private void updateEventData(String eventId, String title, String address, String date, String description, String authorId, int guestMaxCount) {
         Event updatedEvent = new Event(eventId, title, address, date, description, authorId, guestMaxCount);
         Map<String, Object> eventValues = updatedEvent.toMap();
@@ -142,14 +175,17 @@ public class UpdateUserEventActivity extends AppCompatActivity {
         mDatabaseReference.updateChildren(childUpdates);
     }
 
+    /**
+     * Funkcija izdzēš pasākuma objektu no /events/ mezgla, kā arī izdzēš pasākuma atslēgas ierakstu
+     * no lietotāja pasākumu mezgla.
+     */
     private void deleteEvent() {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/events/" + eventId, null);
-//        childUpdates.put("/user-events/" + authorId + "/" + eventId, null);
         mDatabaseReference.updateChildren(childUpdates);
         mDatabaseReference.child("user-events").child(authorId).child(eventId).removeValue();
 
-        Toast.makeText(UpdateUserEventActivity.this, "Pasākums izdzēsts.", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(UpdateUserEventActivity.this, MainActivity.class));
+        Toast.makeText(UserEventUpdateActivity.this, R.string.EVT_MSG_3, Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(UserEventUpdateActivity.this, MainActivity.class));
     }
 }

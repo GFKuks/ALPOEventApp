@@ -3,6 +3,9 @@ package com.alpoeventapp.qualityapp.models;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Pasākuma objekta klase
+ */
 public class Event {
 
     private String eventId;
@@ -13,9 +16,10 @@ public class Event {
     private String authorId;
     private int guestCount = 1;  //Pasākuma organizators vienmēŗ ieskaitīts kā viesis
     private int guestMaxCount;
-//    public Map<String, Boolean> guests = new HashMap<>();
 
-
+    /**
+     * Tukšs konstruktors nepieciešams Firebase lietošanai
+     */
     public Event() {
     }
 
@@ -29,6 +33,10 @@ public class Event {
         this.guestMaxCount = guestMaxCount;
     }
 
+    /**
+     * toMap funkcija HashMap objektā ievieto pasākuma objekta informāciju, kura pēc tam tiek ielikta
+     * atbilstošā pasākuma mezgla apakšā, ar attiecīgajiem nosaukumiem.
+     */
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("eventId", eventId);
@@ -80,7 +88,4 @@ public class Event {
         this.guestCount = guestCount;
     }
 
-    public void setGuestMaxCount(int guestMaxCount) {
-        this.guestMaxCount = guestMaxCount;
-    }
 }

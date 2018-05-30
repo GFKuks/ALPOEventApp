@@ -3,8 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/createEventMenu"
+        android:orderInCategory="102"
+        android:title="Veidot pasākumu" />
+    <item
+        android:id="@+id/findEventMenu"
+        android:orderInCategory="101"
+        android:title="Meklēt pasākumu" />
+    <item
         android:id="@+id/savedEventsMenu"
-        android:orderInCategory="100"
+        android:orderInCategory="103"
         android:title="Saglabātie pasākumi"
         app:showAsAction="never" />
     <item
@@ -13,26 +21,14 @@
         android:title="Mani pasākumi"
         app:showAsAction="never" />
     <item
-        android:id="@+id/createEventMenu"
-        android:orderInCategory="300"
-        android:title="Veidot pasākumu"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/findEventMenu"
-        android:orderInCategory="400"
-        android:title="Meklēt pasākumu"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/profileMenu"
-        android:orderInCategory="500"
-        android:title="Profils"
-        app:showAsAction="never" />
+        android:orderInCategory="402"
+        android:title="Mans profils" />
 
     <item
         android:id="@+id/logoutMenu"
         android:orderInCategory="600"
         android:title="Beigt darbu"
         app:showAsAction="never" />
-
 
 </menu>

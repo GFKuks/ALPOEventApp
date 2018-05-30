@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/createEventMenu"
+        android:orderInCategory="102"
+        android:title="Veidot pasākumu" />
+    <item
+        android:id="@+id/findEventMenu"
+        android:orderInCategory="101"
+        android:title="Meklēt pasākumu" />
+    <item
+        android:id="@+id/savedEventsMenu"
+        android:orderInCategory="103"
+        android:title="Saglabātie pasākumi"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/userEventsMenu"
+        android:orderInCategory="200"
+        android:title="Mani pasākumi"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/profileMenu"
+        android:orderInCategory="402"
+        android:title="Mans profils" />
+
+    <item
+        android:id="@+id/logoutMenu"
+        android:orderInCategory="600"
+        android:title="Beigt darbu"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/actionSearch"
+        android:icon="@android:drawable/ic_menu_search"
+        android:orderInCategory="100"
+        android:title="@string/Search"
+        app:showAsAction="ifRoom" />
+
+</menu>

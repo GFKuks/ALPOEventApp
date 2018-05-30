@@ -14,10 +14,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * Klase, kas atbilst paroles atiestatīšanas aktivitātei
+ */
 public class PasswordActivity extends AppCompatActivity {
 
     private EditText passwordEmail;
-    private Button resetPassword;
     private FirebaseAuth mFirebaseAuth; //FirebaseAuth object deals with firebase authentication functionality
 
     @Override
@@ -26,7 +28,7 @@ public class PasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_password);
 
         passwordEmail = findViewById(R.id.etPasswordEmail);
-        resetPassword = findViewById(R.id.btnPasswordReset);
+        Button resetPassword = findViewById(R.id.btnPasswordReset);
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         resetPassword.setOnClickListener(new View.OnClickListener() {
@@ -43,6 +45,7 @@ public class PasswordActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Toast.makeText(PasswordActivity.this, "Saite uz atiestatīšanu nosūtīta uz e-pastu.", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(PasswordActivity.this, MainActivity.class));
+                                finish();
                             } else {
                                 Toast.makeText(PasswordActivity.this, "Kļūda atiestatīšanas e-pasta sūtīšanā.", Toast.LENGTH_SHORT).show();
                             }
@@ -51,5 +54,11 @@ public class PasswordActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(PasswordActivity.this, MainActivity.class));
+        finish();
     }
 }

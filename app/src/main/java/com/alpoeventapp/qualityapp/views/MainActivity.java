@@ -17,15 +17,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * Klase, kas atbilst autentifikācijas aktivitātei.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private EditText userEmail;
     private EditText userPassword;
-    private TextView info;
-    private Button login;
-    private TextView userRegistration;
     private FirebaseAuth mFirebaseAuth; //object of FirebaseAuth
-    private TextView forgotPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,17 +33,17 @@ public class MainActivity extends AppCompatActivity {
 
         userEmail = findViewById(R.id.etProfileEmail);
         userPassword = findViewById(R.id.etPassword);
-        login = findViewById(R.id.btnLogin);
-        userRegistration = findViewById(R.id.tvRegister);
-        forgotPassword = findViewById(R.id.tvForgotPassword);
+        Button login = findViewById(R.id.btnLogin);
+        TextView userRegistration = findViewById(R.id.tvRegister);
+        TextView forgotPassword = findViewById(R.id.tvForgotPassword);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
-        FirebaseUser user = mFirebaseAuth.getCurrentUser(); //checks in database if user has already logged in on app, if yes, direct to next activity
+        FirebaseUser user = mFirebaseAuth.getCurrentUser(); //mainīgais, ar kuru pārbaudīs, vai lietotājs ir autentificējies
 
-        if (user != null) { //if logged in, finish activity and move on to next activity
-            finish();   //finish function destroys the active activity
-            startActivity(new Intent(MainActivity.this, UserEventsListActivity.class));
+        if (user != null) { //ja lietotājs ir autentificējies
+            startActivity(new Intent(MainActivity.this, UserEventListActivity.class));
+            finish();   //tiek izlaists autentifikācijas logs
         }
 
         login.setOnClickListener(new View.OnClickListener() {   //validates that fits to saved values
@@ -58,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, RegisterActivity.class));
+                finish();
             }
         });
 
@@ -65,35 +65,44 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, PasswordActivity.class));
+                finish();
             }
         });
     }
 
+    /**
+     * Validācijas funkcija, kas pārbauda, vai pastāv e-pasts ar tādu paroli, un ja ir,
+     * vai šis e-pasts ir verificēts.
+     */
     private void validate (String userEmail, String userPassword) {
 
         mFirebaseAuth.signInWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(MainActivity.this, "Autentifikācija izdevusies.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.AUTH_MSG_1, Toast.LENGTH_SHORT).show();
                     checkEmailVerification();   //checking if email is verified
                 } else {
-                    Toast.makeText(MainActivity.this, "Nepareizs e-pasts vai parole!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.AUTH_ERR_1, Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+    /**
+     * E-pasta verifikācijas funkcija
+     */
     private void checkEmailVerification() {
         FirebaseUser firebaseUser = mFirebaseAuth.getInstance().getCurrentUser();
         boolean emailflag = firebaseUser.isEmailVerified();
-        startActivity (new Intent(MainActivity.this, UserEventsListActivity.class));
 
-//        if(emailflag) {               //uncomment if using email verification
-//            startActivity (new Intent(MainActivity.this, UserEventsListActivity.class));
-//        } else {    //if user hasn't verified email, signs out
-//            Toast.makeText(this, "Apstipriniet e-pasta adresi!", Toast.LENGTH_SHORT).show();
-//            mFirebaseAuth.signOut();    //signs out, because we're still signing in
-//        }
+        if(emailflag) {
+            startActivity (new Intent(MainActivity.this, UserEventListActivity.class));
+            finish();
+        } else {
+            Toast.makeText(this, R.string.AUTH_ERR_2, Toast.LENGTH_SHORT).show();
+            mFirebaseAuth.signOut();    //atteikšanās no darba, ja nav verificēts e-pasts
+        }
     }
+
 }

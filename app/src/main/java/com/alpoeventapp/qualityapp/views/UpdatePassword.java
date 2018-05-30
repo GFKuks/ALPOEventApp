@@ -15,9 +15,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * Klase, kas atbilst paroles atjaunināšanas aktivitātei
+ */
 public class UpdatePassword extends AppCompatActivity {
 
-    private Button update;
     private EditText newPassword;
     private EditText newPasswordConfirm;
     private FirebaseUser mFirebaseUser;
@@ -27,7 +29,7 @@ public class UpdatePassword extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_password);
 
-        update = findViewById(R.id.btnUpdatePassword);
+        Button update = findViewById(R.id.btnUpdatePassword);
         newPassword = findViewById(R.id.etNewPassword);
         newPasswordConfirm = findViewById(R.id.etNewPasswordConfirm);
 
@@ -35,16 +37,15 @@ public class UpdatePassword extends AppCompatActivity {
 
         mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-
         update.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {   //klikšķa uztvērējs pārbauda lauku sakritību, veic atbilstošu navigāciju
 
                 String updatedPassword = newPassword.getText().toString();
                 String confirmPassword = newPasswordConfirm.getText().toString();
 
                 if (!updatedPassword.equals(confirmPassword)) {
-                    Toast.makeText(UpdatePassword.this, "Paroļu lauki nesakrīt!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UpdatePassword.this, R.string.REG_ERR_1, Toast.LENGTH_SHORT).show();
                 } else if (updatedPassword.length() < 6) {
                     Toast.makeText(UpdatePassword.this, "Parolei jāsastāv no vismaz 6 simboliem!", Toast.LENGTH_SHORT).show();
                 } else {
@@ -52,10 +53,10 @@ public class UpdatePassword extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(UpdatePassword.this, "Parole veiksmīgi nomainīta", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UpdatePassword.this, R.string.PROF_MSG_2, Toast.LENGTH_SHORT).show();
                                 finish();
                             } else {
-                                Toast.makeText(UpdatePassword.this, "Kļūda paroles maiņā", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UpdatePassword.this, R.string.PROF_ERR_1, Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

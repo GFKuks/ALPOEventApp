@@ -20,7 +20,7 @@
     <string name="btn_delete_profile">Dzēst profilu</string>
     <string name="event_title_header">Nosaukums:</string>
     <string name="event_address_header">Adrese:</string>
-    <string name="event_date_time">Datums un laiks:</string>
+    <string name="event_date_time">Datums:</string>
     <string name="event_description_header">Apraksts:</string>
     <string name="mandatory_field">(Obligāts)</string>
     <string name="optional_field">(Neobligāts)</string>
@@ -38,4 +38,25 @@
     <string name="password_confirm">Apstipriniet paroli</string>
     <string name="btn_save_changes">Saglabāt izmaiņas</string>
     <string name="btn_event_cancel">Atteikties</string>
+    <string name="user_events_title">Mani pasākumi</string>
+    <string name="profile_title">Mans profils</string>
+    <string name="event_title">Pasākumi</string>
+    <string name="saved_events_title">Saglabātie pasākumi</string>
+    <string name="create_event_title">Veidot pasākumu</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="Search">Meklēt pasākumu</string>
+    <string name="date_mandatory_field">MM-dd-yy HH:mm (obl)</string>
+    <!--PPS paziņojumi-->
+    <string name="REG_ERR_3">Šī e-pasta adrese jau ir aizņemta!!</string>
+    <string name="REG_MSG_1">Lietotājs veiksmīgi reģistrēts. Nosūtīts apstiprinājuma e-pasts.</string>
+    <string name="REG_ERR_1">Paroļu lauki nesakrīt!</string>
+    <string name="REG_ERR_2">Lūdzu, aizpildiet visus laukus!</string>
+    <string name="REG_ERR_4">Parolei jāsastāv no vismaz 6 simboliem!</string>
+    <string name="EVT_MSG_3">Pasākums izdzēsts.</string>
+    <string name="PROF_MSG_1">Profils izdzēsts.</string>
+    <string name="PROF_MSG_2">Parole nomainīta.</string>
+    <string name="PROF_ERR_1">Kļūda paroles maiņā.</string>
+    <string name="AUTH_ERR_1">Nepareizs e-pasts vai parole!</string>
+    <string name="AUTH_MSG_1">Autentifikācija izdevusies.</string>
+    <string name="AUTH_ERR_2">Apstipriniet e-pasta adresi!</string>
 </resources>

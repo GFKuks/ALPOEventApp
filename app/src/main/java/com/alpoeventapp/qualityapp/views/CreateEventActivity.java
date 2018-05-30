@@ -1,8 +1,8 @@
 package com.alpoeventapp.qualityapp.views;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +17,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Klase, kas atbilst pasākuma izveidošanas aktivitātei
+ */
 public class CreateEventActivity extends AppCompatActivity {
 
     private EditText eventTitle;
@@ -24,7 +27,6 @@ public class CreateEventActivity extends AppCompatActivity {
     private EditText eventDate;
     private EditText eventDescription;
     private EditText eventMaxGuestCount;
-    private Button cancel, confirm;
 
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseReference;
@@ -35,12 +37,12 @@ public class CreateEventActivity extends AppCompatActivity {
     private String description;
     private String authorId;
     private int guestMaxCount;
-    private String guests;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+        setTitle(getString(R.string.app_name) + ": "+ getString(R.string.create_event_title));
 
         eventTitle = findViewById(R.id.etEventCreateTitle);
         eventAddress = findViewById(R.id.etEventCreateAddress);
@@ -48,8 +50,8 @@ public class CreateEventActivity extends AppCompatActivity {
         eventDescription = findViewById(R.id.etEventCreateDescription);
         eventMaxGuestCount = findViewById(R.id.etMaxGuestCount);
 
-        cancel = findViewById(R.id.btnCancelEventNew);
-        confirm = findViewById(R.id.btnConfirmEventNew);
+        Button cancel = findViewById(R.id.btnCancelEventNew);
+        Button confirm = findViewById(R.id.btnConfirmEventNew);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -60,8 +62,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 if (validate()) {
                     sendEventData(title, address, date, description, authorId, guestMaxCount);
                     Toast.makeText(CreateEventActivity.this, "Pasākums izveidots.", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(CreateEventActivity.this, UserEventListActivity.class));
                     finish();
-                    startActivity(new Intent(CreateEventActivity.this, UserEventsListActivity.class));
                 }
             }
         });
@@ -74,6 +76,9 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Validācijas funkcija pārbauda, vai lauki ir aizpildīti, un vai tie nav pārāk gari.
+     */
     private boolean validate() {
         boolean result = false;
 
@@ -89,9 +94,15 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         if (title.isEmpty() || address.isEmpty() || date.isEmpty()) {
-            Toast.makeText(this, "Lūdzu, aizpildiet obligātos laukus!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.REG_ERR_2, Toast.LENGTH_SHORT).show();
         } else if (title.length() > 25) {
             Toast.makeText(this, "Nosaukums nedrīkst būt garāks par 25 rakstu zīmēm!", Toast.LENGTH_SHORT).show();
+        } else if (address.length() > 50) {
+            Toast.makeText(this, "Adrese nedrīkst būt garāka par 50 rakstu zīmēm!", Toast.LENGTH_SHORT).show();
+        } else if (description.length() > 250) {
+            Toast.makeText(this, "Apraksts nedrīkst būt garāks par 250 rakstu zīmēm!", Toast.LENGTH_SHORT).show();
+        } else if (date.length() > 14) {
+            Toast.makeText(this, "Lūdzu, izmantojiet norādīto datuma formātu!", Toast.LENGTH_SHORT).show();
         } else {
             authorId = mFirebaseAuth.getUid();
             result = true;
@@ -113,7 +124,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/events/" + key, eventValues);
-//        childUpdates.put("/user-events/" + authorId + "/" + ownerValues, null);
 
         mDatabaseReference.updateChildren(childUpdates);
         mDatabaseReference.child("user-events").child(mFirebaseAuth.getUid()).updateChildren(ownerValues);

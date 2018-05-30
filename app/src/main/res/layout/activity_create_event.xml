@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/colored_margins"
     tools:context=".views.CreateEventActivity">
 
     <Button
@@ -89,7 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:ems="10"
-        android:hint="@string/mandatory_field"
+        android:hint="@string/date_mandatory_field"
         android:inputType="datetime"
         app:layout_constraintEnd_toEndOf="@+id/etEventCreateAddress"
         app:layout_constraintHorizontal_bias="0.0"

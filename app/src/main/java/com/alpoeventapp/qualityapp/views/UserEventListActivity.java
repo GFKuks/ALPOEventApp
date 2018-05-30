@@ -3,8 +3,8 @@ package com.alpoeventapp.qualityapp.views;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,8 +26,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class UserEventsListActivity extends AppCompatActivity {
-    private static final String TAG = "UserEventsListActivity";
+/**
+ * Klase nodrošina lietotāja izveidoto pasākumu sarakstu izveidi.
+ */
+
+public class UserEventListActivity extends AppCompatActivity {
+    private static final String TAG = "UserEventListActivity";
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mEventReference;
     private DatabaseReference mUserEventIndex;
@@ -35,23 +39,33 @@ public class UserEventsListActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
 
+    /**
+     * Sākot aktivitāti, papildus parastajam xml izkārtojuma failam, tiek izmantots mRecyclerView
+     * kā izkārtojums saraksta elementiem.
+     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "UserEvents: starts");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_events);
+        setTitle(getString(R.string.app_name) + ": "+ getString(R.string.user_events_title));
         final View parentLayout = findViewById(android.R.id.content);
         mRecyclerView = findViewById(R.id.recycler_view);
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+/**
+ * References uz Firebase datu bāzi. mFirebaseAuth palīdzēs iegūt lietotāja identifikatoru.
+ * mEventReference ir norāde uz pasākumu mezglu un mUserEventIndex ir norāde uz lietotāja
+ * pasākumu indeksu mezglu.
+ */
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mEventReference = FirebaseDatabase.getInstance().getReference().child("events");//.child(mFirebaseAuth.getUid());
+        mEventReference = FirebaseDatabase.getInstance().getReference().child("events");
         mUserEventIndex = FirebaseDatabase.getInstance().getReference().child("user-events").child(mFirebaseAuth.getUid());
 
         mUserEventIndex.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getChildrenCount() == 0) {
+                if (dataSnapshot.getChildrenCount() == 0) { //Ja lietotājam nav pasākumu, parādās paziņojums
                     Snackbar.make(parentLayout, "Jums nav pasākumu! Lai izveidotu pasākumu, atveriet izvēlni augšējā labajā stūrī!", Snackbar.LENGTH_INDEFINITE).show();
                 } else {
                     setUpFirebaseAdapter();
@@ -65,6 +79,11 @@ public class UserEventsListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Adaptera izveidošanas funkcija. Šajā sarakstā tiek izmantots lietotāja pasākumu indekss,
+     * lai atlasītu rezultātus. Tiek norādīts, ka adapteris izmanto Event klasi, kas tiks ievietota
+     * EventViewHolder viewHolder funkcijās, lai piesaistītu elementus sarakstam.
+     */
     private void setUpFirebaseAdapter() {
 
         FirebaseRecyclerOptions<Event> options = new FirebaseRecyclerOptions.Builder<Event>()
@@ -77,6 +96,11 @@ public class UserEventsListActivity extends AppCompatActivity {
                 holder.bindEvent(model);
             }
 
+            /**
+             * onCreateViewHolder darbojas katra viewHolder izveides laikā. Katram viewHolder
+             * tiek pievienots notikumu uztvērējs, kas uz klikšķi iegūst pasākuma identifikatoru,
+             * lai to padotu nākamajai aktivitātei un parādītu pareizo pasākumu.
+             */
             @NonNull
             @Override
             public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -86,7 +110,7 @@ public class UserEventsListActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         String eventId = mFirebaseAdapter.getRef(mRecyclerView.getChildAdapterPosition(v)).getKey();
                         Log.d(TAG, "onClick: key is " + eventId);
-                        Intent intent = new Intent(UserEventsListActivity.this, UserEventsDetailActivity.class);
+                        Intent intent = new Intent(UserEventListActivity.this, UserEventDetailActivity.class);
                         intent.putExtra("eventId", eventId);
 
                         startActivity(intent);
@@ -94,8 +118,6 @@ public class UserEventsListActivity extends AppCompatActivity {
                 });
                 return new EventViewHolder(view);
             }
-
-
         };
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -103,36 +125,36 @@ public class UserEventsListActivity extends AppCompatActivity {
 
         mFirebaseAdapter.startListening();
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mFirebaseAdapter.stopListening();
-    }
-
+    /**
+     * Atteikšanās funkcija. Lietotājs nokļūst autentifikācijas aktivitātē,
+     * tiek pabeigtas visas iepriekšējās aktivitātes.
+     */
     private void Logout() {
         mFirebaseAuth.signOut();
-        finish();
-        startActivity(new Intent(UserEventsListActivity.this, MainActivity.class));
+        startActivity(new Intent(UserEventListActivity.this, MainActivity.class));
+        finishAffinity();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
+    /**
+     * Navigācijas kods. Atkarībā no izvēlētās opcijas, lietotājs tiek aizvests uz attiecīgo
+     * atkivitāti.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
 
             case R.id.savedEventsMenu: {
-                startActivity(new Intent(UserEventsListActivity.this, SavedEventsListActivity.class));
+                startActivity(new Intent(UserEventListActivity.this, SavedEventsListActivity.class));
                 break;
             }
 
             case R.id.createEventMenu: {
-                startActivity(new Intent(UserEventsListActivity.this, CreateEventActivity.class));
+                startActivity(new Intent(UserEventListActivity.this, CreateEventActivity.class));
                 break;
             }
             case R.id.logoutMenu: {
@@ -140,12 +162,16 @@ public class UserEventsListActivity extends AppCompatActivity {
                 break;
             }
             case R.id.profileMenu: {
-                startActivity(new Intent(UserEventsListActivity.this, ProfileActivity.class));
+                startActivity(new Intent(UserEventListActivity.this, ProfileActivity.class));
                 break;
             }
 
             case R.id.findEventMenu: {
-                startActivity(new Intent(UserEventsListActivity.this, BrowseEventsListActivity.class));
+                startActivity(new Intent(UserEventListActivity.this, BrowseEventsListActivity.class));
+                break;
+            }
+
+            case R.id.userEventsMenu: {
                 break;
             }
         }

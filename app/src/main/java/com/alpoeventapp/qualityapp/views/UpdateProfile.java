@@ -1,10 +1,9 @@
 package com.alpoeventapp.qualityapp.views;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,48 +22,53 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ * Klase, kas atbilst lietotāja profila atjaunināšanai
+ */
 public class UpdateProfile extends AppCompatActivity {
 
     private EditText newUsername;
     private EditText userEmail;
-    private Button save;
-    private Button deleteProfile;
+
+    private FirebaseUser mFirebaseUser;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_profile);
+        setTitle(getString(R.string.app_name) + ": " + getString(R.string.profile_title));
 
         newUsername = findViewById(R.id.etProfileUsername);
         userEmail = findViewById(R.id.etProfileEmail);
-        save = findViewById(R.id.btnSave);
-        deleteProfile = findViewById(R.id.btnDeleteProfile);
+        Button save = findViewById(R.id.btnSave);
+        Button deleteProfile = findViewById(R.id.btnDeleteProfile);
 
         userEmail.setEnabled(false); //makes it uneditable
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
-        final DatabaseReference databaseReference = mFirebaseDatabase.getReference().child("users").child(mFirebaseAuth.getUid());
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        mDatabaseReference = mFirebaseDatabase.getReference().child("users").child(mFirebaseAuth.getUid());
+        mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        databaseReference.addValueEventListener(new ValueEventListener() {  //has reference to auth user id
+        ValueEventListener databaseListener = new ValueEventListener() {  //has reference to auth user id
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {   //on change or when app starts
                 UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);  //parameter for getvalue is class name
-                newUsername.setText(userProfile.getUserName().toString());
-                userEmail.setText(userProfile.getUserEmail().toString());
+                newUsername.setText(userProfile.getUserName());
+                userEmail.setText(userProfile.getUserEmail());
             }                                                                        //retrieves data of user with Uid
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(UpdateProfile.this, String.valueOf(databaseError.getCode()), Toast.LENGTH_SHORT);
             }
-        });
+        };
+
+        mDatabaseReference.addValueEventListener(databaseListener);
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,10 +77,10 @@ public class UpdateProfile extends AppCompatActivity {
                 String email = userEmail.getText().toString().trim();
 
                 UserProfile userProfile = new UserProfile(username, email);
+                mDatabaseReference.setValue(userProfile);
 
-                databaseReference.setValue(userProfile);
-
-                finish();   //finishing activity takes you back to previous activity
+                startActivity(new Intent(UpdateProfile.this, ProfileActivity.class));
+                finish();  //finishing activity takes you back to previous activity
             }
         });
 
@@ -89,15 +93,14 @@ public class UpdateProfile extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
+    public void onBackPressed() {
+        startActivity(new Intent(UpdateProfile.this, ProfileActivity.class));
+        finish();
     }
 
+    /**
+     * Profila izdzēšanas funkcija.
+     */
     private void deleteAccount() {
         final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         final FirebaseUser currentUser = firebaseAuth.getCurrentUser();
@@ -106,8 +109,10 @@ public class UpdateProfile extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
+                    Toast.makeText(UpdateProfile.this, R.string.PROF_MSG_1, Toast.LENGTH_SHORT).show();
+                    mDatabaseReference.removeValue();
                     startActivity(new Intent(UpdateProfile.this, MainActivity.class));
-                    finish();
+                    finishAffinity();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

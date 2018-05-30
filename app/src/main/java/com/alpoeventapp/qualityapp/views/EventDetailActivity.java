@@ -1,9 +1,9 @@
 package com.alpoeventapp.qualityapp.views;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,11 +22,12 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Klase, kas atbilst par pasākuma detalizēta skata aktivitāti.
+ */
 public class EventDetailActivity extends AppCompatActivity {
     private static final String TAG = "EventDetailActivity";
 
@@ -39,17 +40,21 @@ public class EventDetailActivity extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseReference;
-//    private DatabaseReference mAuthorDatabaseReference;
     private DatabaseReference mSavedEventDatabaseReference;
 
     private String eventId;
     private String authorId;
     private boolean userAttendance;
-
+    /**
+     * Izmantotas atsauce uz pasākumu mezglu, lai iegūtu informāciju par pasākumu, kā arī atsauce
+     * uz lietotāja saglabāto pasākumu mezglu, lai varētu veikt izmaiņas, ja lietotājs
+     * piesakās vai atsakās no pasākuma.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
+        setTitle(getString(R.string.app_name) + ": "+ getString(R.string.event_title));
 
         eventTitle = findViewById(R.id.etBrowseDetailTitle);
         eventAddress = findViewById(R.id.etBrowseDetailAddress);
@@ -62,8 +67,8 @@ public class EventDetailActivity extends AppCompatActivity {
         eventId = intent.getStringExtra("eventId");
         final View parentLayout = findViewById(android.R.id.content);
 
-        mFirebaseAuth = mFirebaseAuth.getInstance();
 
+        mFirebaseAuth = mFirebaseAuth.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("events").child(eventId);
         mSavedEventDatabaseReference = FirebaseDatabase.getInstance().getReference().child("saved-events").child(mFirebaseAuth.getUid());
 
@@ -92,13 +97,11 @@ public class EventDetailActivity extends AppCompatActivity {
                     if (authorId.equals(mFirebaseAuth.getUid())) {
                         eventAttendToggle.setEnabled(false);
                         Snackbar.make(parentLayout, "Nav iespējams atteikties no sava pasākuma! Ja vēlaties to dzēst, dodaties uz 'Mani pasākumi'!", Snackbar.LENGTH_INDEFINITE).show();
-
-                    } else if ((event.getGuestCount() < event.getGuestMaxCount()) && (!authorId.equals(mFirebaseAuth.getUid()))) {
+                    } else if ((event.getGuestCount() >= event.getGuestMaxCount()) && (!isUserAttending(mSavedEventDatabaseReference))) {
+                        eventAttendToggle.setEnabled(false);
+                    } else {
                         eventAttendToggle.setEnabled(true);
                     }
-//                    else {
-//                        eventAttendToggle.setEnabled(false);
-//                    }
                 }
             }
 
@@ -118,6 +121,14 @@ public class EventDetailActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Funkcijai tiek padota atsauce uz mezglu Firebase datu bāzē. Ar funkcijas isUserAttending
+     * palīdzību, tiek pārbaudīts, vai lietotājs jau pieteicies pasākumam. Ja ir, pogas nospiešana
+     * samazina viesu skaitu un izņem pasākumu no lietotāja saglabāto pasākumu saraksta. Ja nav,
+     * viesu skaits palielinās un pasākums tiek pievienots lietotāja saglabāto pasākumu mezglā.
+     *
+     * @param eventRef - reference uz pasākumu datu bāzes pasākumu mezglā
+     */
     private void onEventInteraction(DatabaseReference eventRef) {
         eventRef.runTransaction(new Transaction.Handler() {
             @Override
@@ -144,26 +155,29 @@ public class EventDetailActivity extends AppCompatActivity {
 
             @Override
             public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onComplete: completed");
             }
         });
     }
 
+    /**
+     * Funkcija izmanto atsauci uz lietotāja saglabāto pasākumu mezglu un pārbauda, vai pasākums tur
+     * atrodams.
+     */
     private boolean isUserAttending(DatabaseReference guestRef) {
         guestRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChild(eventId)) {
                     userAttendance = true;
-                    Log.d(TAG, "onDataChange: " + userAttendance);
                 } else {
                     userAttendance = false;
-                    Log.d(TAG, "onDataChange: " + userAttendance);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Toast.makeText(EventDetailActivity.this, "Kļūda datu pārbaudē!", Toast.LENGTH_SHORT).show();
             }
         });
         return userAttendance;
