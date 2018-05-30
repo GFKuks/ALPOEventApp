@@ -45,6 +45,7 @@ public class EventDetailActivity extends AppCompatActivity {
     private String eventId;
     private String authorId;
     private boolean userAttendance;
+
     /**
      * Izmantotas atsauce uz pasākumu mezglu, lai iegūtu informāciju par pasākumu, kā arī atsauce
      * uz lietotāja saglabāto pasākumu mezglu, lai varētu veikt izmaiņas, ja lietotājs
@@ -72,6 +73,16 @@ public class EventDetailActivity extends AppCompatActivity {
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("events").child(eventId);
         mSavedEventDatabaseReference = FirebaseDatabase.getInstance().getReference().child("saved-events").child(mFirebaseAuth.getUid());
 
+        userAttendance = isUserAttending(mSavedEventDatabaseReference);
+
+        if (userAttendance) {
+            Log.d(TAG, "onCreate: not attending");
+            eventAttendToggle.setText("Pieteikties");
+        } else {
+            Log.d(TAG, "onCreate: attending");
+            eventAttendToggle.setText("Atteikties");
+        }
+
 
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -88,13 +99,9 @@ public class EventDetailActivity extends AppCompatActivity {
                     String guestCount = "Viesu skaits: " + event.getGuestCount() + "/" + event.getGuestMaxCount();
                     eventGuestCount.setText(guestCount);
 
-                    if ((!isUserAttending(mSavedEventDatabaseReference)) && (!authorId.equals(mFirebaseAuth.getUid()))) {
-                        eventAttendToggle.setText("Pieteikties");
-                    } else {
-                        eventAttendToggle.setText("Atteikties");
-                    }
 
                     if (authorId.equals(mFirebaseAuth.getUid())) {
+                        eventAttendToggle.setText("Atteikties");
                         eventAttendToggle.setEnabled(false);
                         Snackbar.make(parentLayout, "Nav iespējams atteikties no sava pasākuma! Ja vēlaties to dzēst, dodaties uz 'Mani pasākumi'!", Snackbar.LENGTH_INDEFINITE).show();
                     } else if ((event.getGuestCount() >= event.getGuestMaxCount()) && (!isUserAttending(mSavedEventDatabaseReference))) {
@@ -117,6 +124,11 @@ public class EventDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onEventInteraction(mDatabaseReference);
+                if (!isUserAttending(mSavedEventDatabaseReference)) {
+                    eventAttendToggle.setText("Atteikties");
+                } else {
+                    eventAttendToggle.setText("Pieteikties");
+                }
             }
         });
     }
@@ -142,11 +154,15 @@ public class EventDetailActivity extends AppCompatActivity {
                     event.setGuestCount(event.getGuestCount() - 1);
                     mSavedEventDatabaseReference.child(eventId).removeValue();
 
+                    userAttendance = false;
+
                 } else {
                     event.setGuestCount(event.getGuestCount() + 1);
                     Map<String, Object> savedEvent = new HashMap<>();
                     savedEvent.put(event.getEventId(), true);
                     mSavedEventDatabaseReference.updateChildren(savedEvent);
+
+                    userAttendance = true;
                 }
                 // Set value and report transaction success
                 mutableData.setValue(event);
@@ -165,21 +181,26 @@ public class EventDetailActivity extends AppCompatActivity {
      * atrodams.
      */
     private boolean isUserAttending(DatabaseReference guestRef) {
-        guestRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild(eventId)) {
-                    userAttendance = true;
-                } else {
-                    userAttendance = false;
-                }
-            }
 
+        ValueEventListener initialAttendanceListener = new ValueEventListener() {
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(EventDetailActivity.this, "Kļūda datu pārbaudē!", Toast.LENGTH_SHORT).show();
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if (dataSnapshot.hasChild(eventId)) {
+                Log.d(TAG, "onDataChange: " + userAttendance);
+                userAttendance = true;
+            } else {
+                Log.d(TAG, "onDataChange: " + userAttendance);
+                userAttendance = false;
             }
-        });
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Toast.makeText(EventDetailActivity.this, "Kļūda datu pārbaudē!", Toast.LENGTH_SHORT).show();
+        }
+    };
+        guestRef.addValueEventListener(initialAttendanceListener);
         return userAttendance;
     }
+
 }
